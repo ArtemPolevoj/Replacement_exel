@@ -17,7 +17,6 @@ public class Replacement {
         String txt;
         String outText = "";
 
-
         for (File file : openFile) {
 
             String nameFile = file.getName();
@@ -53,45 +52,44 @@ public class Replacement {
 
                 switch (amount) {
                     case (0):
-                        txt = "Р’ С„Р°Р№Р»Рµ \"" + nameFile + "\" СЃРѕРІРїР°РґРµРЅРёР№ РЅРµ РЅР°Р№РґРµРЅРѕ.\n";
+                        txt = "В файле \"" + nameFile + "\" совпадений не найдено.\n";
                         break;
                     case (1):
-                        txt = "Р’ С„Р°Р№Р»Рµ \"" + nameFile + "\" РїСЂРѕРёР·РІРµРґРµРЅР° " + amount + " Р·Р°РјРµРЅР°.\n";
+                        txt = "В файле \"" + nameFile + "\" произведена " + amount + " замена.\n";
                         break;
                     case (2):
-                        txt = "Р’ С„Р°Р№Р»Рµ \"" + nameFile + "\" РїСЂРѕРёР·РІРµРґРµРЅРѕ " + amount + " Р·Р°РјРµРЅС‹.\n";
+                        txt = "В файле \"" + nameFile + "\" произведено " + amount + " замены.\n";
                         break;
                     case (3):
-                        txt = "Р’ С„Р°Р№Р»Рµ \"" + nameFile + "\" РїСЂРѕРёР·РІРµРґРµРЅРѕ " + amount + " Р·Р°РјРµРЅС‹.\n";
+                        txt = "В файле \"" + nameFile + "\" произведено " + amount + " замены.\n";
                         break;
                     case (4):
-                        txt = "Р’ С„Р°Р№Р»Рµ \"" + nameFile + "\" РїСЂРѕРёР·РІРµРґРµРЅРѕ " + amount + " Р·Р°РјРµРЅС‹.\n";
+                        txt = "В файле \"" + nameFile + "\" произведено " + amount + " замены.\n";
                         break;
                     case (21):
-                        txt = "Р’ С„Р°Р№Р»Рµ \"" + nameFile + "\" РїСЂРѕРёР·РІРµРґРµРЅР° " + amount + " Р·Р°РјРµРЅР°.\n";
+                        txt = "В файле \"" + nameFile + "\" произведена " + amount + " замена.\n";
                         break;
                     case (22):
-                        txt = "Р’ С„Р°Р№Р»Рµ \"" + nameFile + "\" РїСЂРѕРёР·РІРµРґРµРЅРѕ " + amount + " Р·Р°РјРµРЅС‹.\n";
+                        txt = "В файле \"" + nameFile + "\" произведено " + amount + " замены.\n";
                         break;
                     case (23):
-                        txt = "Р’ С„Р°Р№Р»Рµ \"" + nameFile + "\" РїСЂРѕРёР·РІРµРґРµРЅРѕ " + amount + " Р·Р°РјРµРЅС‹.\n";
+                        txt = "В файле \"" + nameFile + "\" произведено " + amount + " замены.\n";
                         break;
                     case (24):
-                        txt = "Р’ С„Р°Р№Р»Рµ \"" + nameFile + "\" РїСЂРѕРёР·РІРµРґРµРЅРѕ " + amount + " Р·Р°РјРµРЅС‹.\n";
+                        txt = "В файле \"" + nameFile + "\" произведено " + amount + " замены.\n";
                         break;
                     default:
-                        txt = "Р’ С„Р°Р№Р»Рµ \"" + nameFile + "\" РїСЂРѕРёР·РІРµРґРµРЅРѕ " + amount + " Р·Р°РјРµРЅ.\n";
+                        txt = "В файле \"" + nameFile + "\" произведено " + amount + " замен.\n";
                         break;
                 }
 
                 outText += txt;
 
             } catch (Exception e) {
-                outText = "Р’ С„Р°Р№Р»Рµ \"" + nameFile + "\" РЅРµ СѓРґР°Р»РѕСЃСЊ РІС‹РїРѕР»РЅРёС‚СЊ Р·Р°РјРµРЅСѓ. Р¤Р°Р№Р» Р·Р°РЅСЏС‚. Р’РѕР·РјРѕР¶РЅРѕ РѕС‚РєСЂС‹С‚ РІ РґСЂСѓРіРѕР№ РїСЂРѕРіСЂР°РјРјРµ.\n";
+                outText = "В файле \"" + nameFile + "\" не удалось выполнить замену. Файл занят. Возможно открыт в другой программе.\n";
             }
 
         }
-
         return outText;
     }
 }

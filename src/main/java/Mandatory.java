@@ -12,43 +12,55 @@ import java.util.Iterator;
 public class Mandatory {
     static void mandatory() {
 
-     String fileName = Files.save();
+        String fileName = Files.save();
 
-     if(fileName.equals("")) return;
+        if (fileName.equals("")) return;
 
-     boolean fileExists = false;
+        boolean fileExists = false;
 
         if (new File(fileName).exists()) {
 
-            write(fileName,true);
+            try(FileInputStream inputStream = new FileInputStream(fileName)) {
+                XSSFWorkbook saveBook = new XSSFWorkbook(inputStream);
+                write(fileName, true,saveBook);
+
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Не удалось прочитать файл.");
+                return;
+            }
 
         } else {
 
-            write(fileName + ".xlsx",false);
+            try (XSSFWorkbook saveBook = new XSSFWorkbook()){
+                write(fileName + ".xlsx", false,saveBook);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Не удалось создать новый файл.");
+                return;
+            }
 
         }
     }
 
-    static void write(String fileName, boolean fileExists){
+    static void write(String fileName, boolean fileExists, XSSFWorkbook saveBook)  {
 
         File[] openFile = Files.open();
-
-        if(openFile[0] == null) return;
-
-        XSSFWorkbook saveBook = new XSSFWorkbook();
+        boolean exception = false;
+        if (openFile[0] == null) return;
 
         for (File file : openFile) {
 
             try (FileInputStream inputStream = new FileInputStream(file)) {
                 XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
 
-                XSSFSheet openSheet = workbook.getSheet("Р РµРјРѕРЅС‚");
+                XSSFSheet openSheet = workbook.getSheet("Ремонт");
 
                 if (openSheet == null || !file.getName().contains("ver")) {
-                    JOptionPane.showMessageDialog(null, "Р’ С„Р°Р№Р»Рµ " + file.getName() + " РЅРµС‚ РћР—.\nР’С‹Р±РµСЂРµС‚Рµ С„Р°Р№Р»(С‹) СЃ ver.2 Рё РІС‹С€Рµ");
+                    JOptionPane.showMessageDialog(null, "В файле " + file.getName() + " нет ОЗ.\nВыберете файл(ы) с ver.2 и выше");
                     return;
                 } else {
-                    String sheetName = JOptionPane.showInputDialog(null, "Р’РµРґРёС‚Рµ РёРјСЏ Р»РёСЃС‚Р°", file.getName().substring(2));
+
+                    String sheetName = JOptionPane.showInputDialog(null, "Ведите имя листа", file.getName().substring(2));
+
                     XSSFSheet newSheet = saveBook.createSheet(sheetName.trim());
                     int rows = 7;
                     int colPart = 0;
@@ -94,7 +106,7 @@ public class Mandatory {
                     nameList.setCellStyle(styleFont);
 
                     XSSFCell labor = row2.createCell(colLabor);
-                    labor.setCellValue("РўСЂСѓРґРѕР·Р°С‚СЂР°С‚С‹");
+                    labor.setCellValue("Трудозатраты");
                     labor.setCellStyle(styleFont);
 
                     XSSFCell laborQuantry = row2.createCell(colLabor + 1);
@@ -102,7 +114,7 @@ public class Mandatory {
                     laborQuantry.setCellStyle(center);
 
                     XSSFCell test = row3.createCell(colLabor);
-                    test.setCellValue("РўРµСЃС‚");
+                    test.setCellValue("Тест");
                     test.setCellStyle(styleFont);
 
                     XSSFCell testQuantry = row3.createCell(colLabor + 1);
@@ -110,7 +122,7 @@ public class Mandatory {
                     testQuantry.setCellStyle(center);
 
                     XSSFCell laborTotalName = row4.createCell(colLabor);
-                    laborTotalName.setCellValue("Р’СЃРµРіРѕ (С‡/С‡)");
+                    laborTotalName.setCellValue("Всего (ч/ч)");
                     laborTotalName.setCellStyle(styleFont);
 
                     XSSFCell laborTotal = row4.createCell(colLabor + 1);
@@ -118,22 +130,22 @@ public class Mandatory {
                     laborTotal.setCellStyle(center);
 
                     XSSFCell partNumer = row5.createCell(colPart);
-                    partNumer.setCellValue("РџР°СЂС‚ РЅРѕРјРµСЂ");
+                    partNumer.setCellValue("Парт номер");
                     partNumer.setCellStyle(styleFont);
 
                     XSSFCell quantity = row5.createCell(colQuantry);
-                    quantity.setCellValue("РљРѕР»-РІРѕ");
+                    quantity.setCellValue("Кол-во");
                     quantity.setCellStyle(styleFont);
 
                     XSSFCell partName = row5.createCell(colName);
-                    partName.setCellValue("РќР°Р·РІР°РЅРёРµ");
+                    partName.setCellValue("Название");
                     partName.setCellStyle(styleFont);
 
                     for (Row row : openSheet) {
                         Iterator<Cell> cellIterator = row.cellIterator();
                         while (cellIterator.hasNext()) {
                             Cell cell = cellIterator.next();
-                            if (cell.toString().contains("РћР—") && cell.getColumnIndex() == 7) {
+                            if (cell.toString().contains("ОЗ") && cell.getColumnIndex() == 7) {
                                 int colGet = cell.getColumnIndex();
                                 int rowGet = cell.getRowIndex();
 
@@ -182,7 +194,7 @@ public class Mandatory {
 
                     while (!sorted) {
                         sorted = true;
-                        for (int l = 7; l <= newSheet.getLastRowNum() - 1; l++) {
+                        for (int l = 7; l < newSheet.getLastRowNum(); l++) {
 
                             XSSFCell part = newSheet.getRow(l).getCell(0);
                             XSSFCell countr = newSheet.getRow(l).getCell(1);
@@ -222,21 +234,22 @@ public class Mandatory {
 
                 }
 
+
+                try (FileOutputStream uotFile = new FileOutputStream(fileName)) {
+                    saveBook.write(uotFile);
+                } catch (IOException e) {
+                    exception = true;
+                    JOptionPane.showMessageDialog(null, "Не удалось записать файл.");
+                    return;
+                }
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "РќРµ СѓРґР°Р»РѕСЃСЊ РѕР±СЂР°Р±РѕС‚Р°С‚СЊ " + file.getName());
+                exception = true;
+                JOptionPane.showMessageDialog(null, "Не удалось обработать " + file.getName());
+                return;
             }
 
         }
-
-        try (FileOutputStream uotFile = new FileOutputStream(fileName)) {
-            saveBook.write(uotFile);
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РїРёСЃР°С‚СЊ С„Р°Р№Р».");
-        }
-
-        if (fileExists) JOptionPane.showMessageDialog(null, "Р¤Р°Р№Р» РѕР±РЅРѕРІР»С‘РЅ");
-
-        else  JOptionPane.showMessageDialog(null, "Р¤Р°Р№Р» СЃРѕР·РґР°РЅ");
-
+        if (fileExists & !exception) JOptionPane.showMessageDialog(null, "Файл обновлён");
+        if (!fileExists & !exception) JOptionPane.showMessageDialog(null, "Файл создан");
     }
 }
