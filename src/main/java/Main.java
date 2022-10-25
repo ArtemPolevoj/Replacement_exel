@@ -7,39 +7,44 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
 
-        JFrame frame = new JFrame("ÇÀÌÅÍÀ");
+        JFrame frame = new JFrame("Ð—ÐÐœÐ•ÐÐ");
         frame.setDefaultCloseOperation(3);
         frame.setResizable(false);
         frame.setLayout(new GridLayout(4, 2, 2, 10));
         frame.setLayout((LayoutManager) null);
         frame.setBounds(400, 120, 665, 520);
-        JLabel labelReplace = new JLabel("Çàìåíèòü");
+
+        JLabel labelReplace = new JLabel("Ð—Ð°Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ");
         labelReplace.setFont(new Font("Verdana", 1, 14));
         labelReplace.setBounds(10, 5, 110, 30);
         frame.add(labelReplace);
+
         JTextField fieldReplace = new JTextField();
         fieldReplace.setFont(new Font("Verdana", 1, 14));
         fieldReplace.setBounds(115, 5, 200, 30);
         frame.add(fieldReplace);
-        JLabel labelReplacment = new JLabel("çàìåíèòü íà");
+
+        JLabel labelReplacment = new JLabel("Ð·Ð°Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð½Ð°");
         labelReplacment.setFont(new Font("Verdana", 1, 14));
         labelReplacment.setBounds(330, 5, 110, 30);
         frame.add(labelReplacment);
+
         JTextField fieldReplacment = new JTextField();
         fieldReplacment.setFont(new Font("Verdana", 1, 14));
         fieldReplacment.setBounds(440, 5, 200, 30);
         frame.add(fieldReplacment);
-        JTextArea areOutText = new JTextArea("Âûâîä ðåçóëüòàòîâ çàìåíû.");
+
+        JTextArea areOutText = new JTextArea("Ð’Ñ‹Ð²Ð¾Ð´ Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð¾Ð² Ð·Ð°Ð¼ÐµÐ½Ñ‹.");
         areOutText.setFont(new Font("Verdana", 0, 14));
         areOutText.setBounds(10, 120, 630, 180);
         areOutText.setLineWrap(true);
         areOutText.setWrapStyleWord(true);
         frame.add(areOutText);
-        JButton buttonReplace = new JButton("Âûáðàòü ôàéë(û) è âûïîëíèòü çàìåíó");
+
+        JButton buttonReplace = new JButton("Ð’Ñ‹Ð±Ñ€Ð°Ñ‚ÑŒ Ñ„Ð°Ð¹Ð»(Ñ‹) Ð¸ Ð²Ñ‹Ð¿Ð¾Ð»Ð½Ð¸Ñ‚ÑŒ Ð·Ð°Ð¼ÐµÐ½Ñƒ");
         buttonReplace.setFont(new Font("Verdana", 1, 16));
         buttonReplace.setBounds(10, 50, 630, 50);
         buttonReplace.addActionListener((e) ->  areOutText.setText(Replacement.replace(fieldReplace.getText(), fieldReplacment.getText())));
-
 
         buttonReplace.setBorderPainted(true);
         frame.add(buttonReplace);
@@ -49,15 +54,14 @@ public class Main {
         scrollfieldOutText.setBounds(10, 120, 630, 180);
         frame.add(scrollfieldOutText);
 
-        JButton buttonMandatory = new JButton("ÏÎËÓ×ÈÒÜ ÎÇ");
+        JButton buttonMandatory = new JButton("ÐŸÐžÐ›Ð£Ð§Ð˜Ð¢Ð¬ ÐžÐ—");
         buttonMandatory.setFont(new Font("Verdana", Font.BOLD,20));
         buttonMandatory.setBorderPainted(true);
         buttonMandatory.setBounds(10,320,630,50);
         buttonMandatory.addActionListener(e -> Mandatory.mandatory());
-
         frame.add(buttonMandatory);
 
-        JButton buttonExit = new JButton("ÂÛÕÎÄ");
+        JButton buttonExit = new JButton("Ð’Ð«Ð¥ÐžÐ”");
         buttonExit.setFont(new Font("Verdana", 1, 20));
         buttonExit.setBorderPainted(true);
         buttonExit.setBounds(10, 420, 630, 50);
@@ -66,6 +70,5 @@ public class Main {
         });
         frame.add(buttonExit);
         frame.setVisible(true);
-
     }
 }

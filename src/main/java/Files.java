@@ -7,7 +7,7 @@ public class Files {
     static File[] open() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setDialogTitle("¬€¡≈–≈“≈ ‘¿…À(€) ƒÀﬂ Œ¡–¿¡Œ“ »");
+        fileChooser.setDialogTitle("–í–´–ë–ï–†–ï–¢–ï –§–ê–ô–õ(–´) –î–õ–Ø –û–ë–†–ê–ë–û–¢–ö–ò");
         fileChooser.setMultiSelectionEnabled(true);
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Exsel.xlsx", "xlsx"));
@@ -21,18 +21,16 @@ public class Files {
         JFileChooser saveFileChooser = new JFileChooser();
 
         saveFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        saveFileChooser.setDialogTitle("—Œ«ƒ¿…“≈ »À» ¬€¡≈–»“≈ ‘¿…À ƒÀﬂ —Œ’–¿Õ≈Õ»ﬂ");
+        saveFileChooser.setDialogTitle("–°–û–ó–î–ê–ô–¢–ï –ò–õ–ò –í–´–ë–ï–†–ò–¢–ï –§–ê–ô–õ –î–õ–Ø –°–û–•–†–ê–ù–ï–ù–ò–Ø");
         saveFileChooser.setMultiSelectionEnabled(true);
         saveFileChooser.setAcceptAllFileFilterUsed(false);
         saveFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Exsel.xlsx", "xlsx"));
-
 
         int i =saveFileChooser.showSaveDialog(null);
 
         if(i==1)return "";
 
         else return saveFileChooser.getSelectedFile().getPath();
-
 
     }
 
