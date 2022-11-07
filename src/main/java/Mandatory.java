@@ -7,60 +7,75 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.swing.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Mandatory {
-    static void mandatory() {
+    static String mandatory() {
 
-        File[] openFile = Files.open();
-        if (openFile[0] == null) return;
+        String outText = "";
+        ArrayList<File> files = Read.reading();
+        ArrayList<File> openFile = new ArrayList<File>();
+        for (File file:files) {
+            if (file.getName().contains("ver.2")){
+                openFile.add(file);
+            }
+        }
+
+
+        if (openFile.isEmpty()){
+            outText = "В выбранной папке отсутствуют файлы для получения ОЗ." ;
+        }else {
 
         String fileName = Files.save();
 
-        if (fileName.equals("")) return;
+        if (fileName.equals("")){
+            outText = "Не выбран файл для сохранеия." ;
+        }else {
 
-        boolean fileExists = false;
+            boolean fileExists = false;
 
-        if (new File(fileName).exists()) {
+            if (new File(fileName).exists()) {
 
-            try(XSSFWorkbook saveBook = new XSSFWorkbook(new FileInputStream(fileName)) ) {
+                try (XSSFWorkbook saveBook = new XSSFWorkbook(new FileInputStream(fileName))) {
 
-                write(fileName, true,saveBook, openFile);
+                    outText =  write(fileName, true, saveBook, openFile);
 
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "Не удалось прочитать файл.");
+                } catch (IOException e) {
+                    outText = "Не удалось прочитать файл.";
+                }
 
+            } else {
+
+                try (XSSFWorkbook saveBook = new XSSFWorkbook()) {
+                    outText = write(fileName + ".xlsx", false, saveBook, openFile);
+                } catch (IOException e) {
+                    outText = "Не удалось создать новый файл.";
+
+                }
             }
-
-        } else {
-
-            try (XSSFWorkbook saveBook = new XSSFWorkbook()){
-                write(fileName + ".xlsx", false,saveBook, openFile);
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "Не удалось создать новый файл.");
-
-            }
-
         }
+        }
+        return outText;
     }
 
-    static void write(String fileName, boolean fileExists, XSSFWorkbook saveBook, File[] openFile)  {
+    static String write(String fileName, boolean fileExists, XSSFWorkbook saveBook, ArrayList<File> openFile)  {
 
         boolean exception = false;
+        String txt= "";
+        String outText = "";
+
 
         for (File file : openFile) {
+
+
 
             try (XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(file))) {
 
                 XSSFSheet openSheet = workbook.getSheet("Ремонт");
 
-                if (openSheet == null || !file.getName().contains("ver")) {
-                    JOptionPane.showMessageDialog(null, "В файле " + file.getName() + " нет ОЗ.\nВыберете файл(ы) с ver.2 и выше");
-                    return;
-                } else {
-
                     String sheetName = JOptionPane.showInputDialog(null, "Ведите имя листа", file.getName().substring(2));
-
+                    txt = txt + sheetName + ", ";
                     XSSFSheet newSheet = saveBook.createSheet(sheetName.trim());
                     int rows = 7;
                     int colPart = 0;
@@ -234,23 +249,29 @@ public class Mandatory {
                         newSheet.getRow(6).removeCell(countrTemp);
                         newSheet.getRow(6).removeCell(nameTemp);
                     }
-                }
+
 
                 try (FileOutputStream uotFile = new FileOutputStream(fileName)) {
                     saveBook.write(uotFile);
                 } catch (IOException e) {
                     exception = true;
-                    JOptionPane.showMessageDialog(null, "Не удалось записать файл.");
-                    return;
+                    txt = "Не удалось записать файл.";
+
                 }
             } catch (IOException e) {
                 exception = true;
-                JOptionPane.showMessageDialog(null, "Не удалось обработать " + file.getName());
-                return;
+                txt = "Не удалось обработать " + file.getName();
+
             }
 
         }
-        if (fileExists & !exception) JOptionPane.showMessageDialog(null, "Файл обновлён");
-        if (!fileExists & !exception) JOptionPane.showMessageDialog(null, "Файл создан");
+        String nameFile = new File(fileName).getName();
+        if (fileExists & !exception){
+            outText ="Файл " + nameFile +" обновлён. Добавлено ОЗ " + txt +".";
+        }
+        if (!fileExists & !exception) {
+            outText ="Создан файл " + nameFile + " с ОЗ " + txt +".";
+        }
+        return outText;
     }
 }

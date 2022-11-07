@@ -1,20 +1,22 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
 
 
-        JFrame frame = new JFrame("Р—РђРњР•РќРђ");
+        JFrame frame = new JFrame("РАБОТА С ЭКСЕЛЬ");
         frame.setDefaultCloseOperation(3);
         frame.setResizable(false);
         frame.setLayout(new GridLayout(4, 2, 2, 10));
         frame.setLayout((LayoutManager) null);
         frame.setBounds(400, 120, 665, 520);
 
-        JLabel labelReplace = new JLabel("Р—Р°РјРµРЅРёС‚СЊ");
+        JLabel labelReplace = new JLabel("Заменить");
         labelReplace.setFont(new Font("Verdana", 1, 14));
         labelReplace.setBounds(10, 5, 110, 30);
         frame.add(labelReplace);
@@ -24,7 +26,7 @@ public class Main {
         fieldReplace.setBounds(115, 5, 200, 30);
         frame.add(fieldReplace);
 
-        JLabel labelReplacment = new JLabel("Р·Р°РјРµРЅРёС‚СЊ РЅР°");
+        JLabel labelReplacment = new JLabel("заменить на");
         labelReplacment.setFont(new Font("Verdana", 1, 14));
         labelReplacment.setBounds(330, 5, 110, 30);
         frame.add(labelReplacment);
@@ -34,17 +36,36 @@ public class Main {
         fieldReplacment.setBounds(440, 5, 200, 30);
         frame.add(fieldReplacment);
 
-        JTextArea areOutText = new JTextArea("Р’С‹РІРѕРґ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ Р·Р°РјРµРЅС‹.");
+        JTextArea areOutText = new JTextArea("Вывод результатов работы.");
         areOutText.setFont(new Font("Verdana", 0, 14));
         areOutText.setBounds(10, 120, 630, 180);
         areOutText.setLineWrap(true);
         areOutText.setWrapStyleWord(true);
         frame.add(areOutText);
 
-        JButton buttonReplace = new JButton("Р’С‹Р±СЂР°С‚СЊ С„Р°Р№Р»(С‹) Рё РІС‹РїРѕР»РЅРёС‚СЊ Р·Р°РјРµРЅСѓ");
+        JButton buttonReplace = new JButton("Выбрать файл(ы) и выполнить замену");
         buttonReplace.setFont(new Font("Verdana", 1, 16));
         buttonReplace.setBounds(10, 50, 630, 50);
-        buttonReplace.addActionListener((e) ->  areOutText.setText(Replacement.replace(fieldReplace.getText(), fieldReplacment.getText())));
+        buttonReplace.addActionListener(e -> {
+
+                    String text = "";
+                    String textAll = "";
+                    ArrayList<File> openFile = Read.reading();
+                    if (openFile.isEmpty()) {
+                        areOutText.setText("В выбраной папке нет эксель файлов.");
+                    } else {
+                        for (File file : openFile) {
+                            areOutText.setText("Обрабатываем файл - " + file.getName());
+                           // JOptionPane.showMessageDialog(null,"Обрабатываем файл - " + file.getName());
+                            text = Replacement.replace(file, fieldReplace.getText(), fieldReplacment.getText());
+                            textAll += text;
+
+                        }
+
+                        areOutText.setText(textAll);
+                    }
+                });
+
 
         buttonReplace.setBorderPainted(true);
         frame.add(buttonReplace);
@@ -54,14 +75,14 @@ public class Main {
         scrollfieldOutText.setBounds(10, 120, 630, 180);
         frame.add(scrollfieldOutText);
 
-        JButton buttonMandatory = new JButton("РџРћР›РЈР§РРўР¬ РћР—");
+        JButton buttonMandatory = new JButton("ПОЛУЧИТЬ ОЗ");
         buttonMandatory.setFont(new Font("Verdana", Font.BOLD,20));
         buttonMandatory.setBorderPainted(true);
         buttonMandatory.setBounds(10,320,630,50);
-        buttonMandatory.addActionListener(e -> Mandatory.mandatory());
+        buttonMandatory.addActionListener(e -> areOutText.setText(Mandatory.mandatory()));
         frame.add(buttonMandatory);
 
-        JButton buttonExit = new JButton("Р’Р«РҐРћР”");
+        JButton buttonExit = new JButton("ВЫХОД");
         buttonExit.setFont(new Font("Verdana", 1, 20));
         buttonExit.setBorderPainted(true);
         buttonExit.setBounds(10, 420, 630, 50);
