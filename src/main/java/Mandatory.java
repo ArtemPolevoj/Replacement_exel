@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Mandatory {
     static String mandatory() {
@@ -17,20 +19,20 @@ public class Mandatory {
         ArrayList<File> files = Read.reading();
         ArrayList<File> openFile = new ArrayList<File>();
         for (File file:files) {
-            if (file.getName().contains("ver.2")){
+            if (file.getName().contains("КД") && file.getName().contains("ver.2")){
                 openFile.add(file);
             }
         }
 
 
         if (openFile.isEmpty()){
-            outText = "В выбранной папке отсутствуют файлы для получения ОЗ." ;
+            return  "В выбранной папке отсутствуют файлы для получения ОЗ.";
         }else {
 
         String fileName = Files.save();
 
         if (fileName.equals("")){
-            outText = "Не выбран файл для сохранеия." ;
+            return "Не выбран файл для сохранеия." ;
         }else {
 
             boolean fileExists = false;
@@ -42,7 +44,7 @@ public class Mandatory {
                     outText =  write(fileName, true, saveBook, openFile);
 
                 } catch (IOException e) {
-                    outText = "Не удалось прочитать файл.";
+                    return "Не удалось обработать файл.";
                 }
 
             } else {
@@ -50,7 +52,7 @@ public class Mandatory {
                 try (XSSFWorkbook saveBook = new XSSFWorkbook()) {
                     outText = write(fileName + ".xlsx", false, saveBook, openFile);
                 } catch (IOException e) {
-                    outText = "Не удалось создать новый файл.";
+                    return "Не удалось создать новый файл.";
 
                 }
             }
@@ -61,22 +63,63 @@ public class Mandatory {
 
     static String write(String fileName, boolean fileExists, XSSFWorkbook saveBook, ArrayList<File> openFile)  {
 
-        boolean exception = false;
-        String txt= "";
+        String textCatch = "";
+        String text= "";
         String outText = "";
+        Pattern pattern = Pattern.compile("[^КД].*[^\\Sv]");
+        String nameFile = new File(fileName).getName().replace(".xlsx","");
 
 
-        for (File file : openFile) {
+        file:
 
+            for (int i = 0; i < openFile.size(); i++){
+                File file = openFile.get(i);
 
+            Matcher matcher = pattern.matcher(file.getName());
 
             try (XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(file))) {
 
                 XSSFSheet openSheet = workbook.getSheet("Ремонт");
+                XSSFSheet newSheet ;
+                String preSheetName ;
+                String sheetName ;
 
-                    String sheetName = JOptionPane.showInputDialog(null, "Ведите имя листа", file.getName().substring(2));
-                    txt = txt + sheetName + ", ";
-                    XSSFSheet newSheet = saveBook.createSheet(sheetName.trim());
+                if (matcher.find()) {
+                    preSheetName = matcher.group().trim();
+                }else{
+                    return  "Ошибка в получении предполагаемого имени ОЗ (листа).";
+                }
+
+                    sheetName = JOptionPane.showInputDialog(null, "Ведите имя ОЗ (листа).", preSheetName);
+                    if (sheetName == null) return "Не выбрано имя ОЗ (листа) для сохранения.";
+
+                    if (fileExists){
+
+                        boolean IllegalArgumentException = false;
+                        try {
+                            newSheet = saveBook.createSheet(sheetName);
+                        } catch (IllegalArgumentException e) {
+                            JOptionPane.showMessageDialog(null, "Такое ОЗ уже существует в файле \"" + nameFile + "\".");
+                            IllegalArgumentException = true;
+                            continue file;
+                        }
+
+                        if (IllegalArgumentException) {
+                            newSheet = saveBook.createSheet(sheetName);
+                        }
+
+                    }else {
+                        newSheet = saveBook.createSheet(sheetName);
+                    }
+
+                    if (i == openFile.size() - 1){
+                        text = text + sheetName + ".";
+                    } else {
+                        text = text + sheetName + ", ";
+                    }
+
+
+
                     int rows = 7;
                     int colPart = 0;
                     int colQuantry = 1;
@@ -182,7 +225,7 @@ public class Mandatory {
 
                                         XSSFCell newpart = newSheet.getRow(k).getCell(0);
                                         XSSFCell newcountr = newSheet.getRow(k).getCell(1);
-                                        XSSFCell newname = newSheet.getRow(k).getCell(2);
+
 
                                         if (newpart.toString().equals(partOpen.toString())) {
                                             newcountr.setCellValue(newcountr.getNumericCellValue() + qtyOpen.getNumericCellValue());
@@ -254,24 +297,25 @@ public class Mandatory {
                 try (FileOutputStream uotFile = new FileOutputStream(fileName)) {
                     saveBook.write(uotFile);
                 } catch (IOException e) {
-                    exception = true;
-                    txt = "Не удалось записать файл.";
+
+                    return  "Не удалось записать файл \"" + nameFile + "\".";
 
                 }
             } catch (IOException e) {
-                exception = true;
-                txt = "Не удалось обработать " + file.getName();
+
+                textCatch = "Не удалось обработать " + file.getName().replace(".xlsx","");
 
             }
 
         }
-        String nameFile = new File(fileName).getName();
-        if (fileExists & !exception){
-            outText ="Файл " + nameFile +" обновлён. Добавлено ОЗ " + txt +".";
+        if (text == ""){
+            return "В файле \"" + nameFile +"\" уже есть выбранные ОЗ";
+        } else if (fileExists){
+            return "Файл \"" + nameFile +"\" - обновлён.\nДобавлено ОЗ: " + text + "\n" + textCatch ;
+        } else {
+            return "Файл \"" + nameFile +"\" - создан.\nВставлено ОЗ: " + text + "\n" + textCatch ;
         }
-        if (!fileExists & !exception) {
-            outText ="Создан файл " + nameFile + " с ОЗ " + txt +".";
-        }
-        return outText;
+
+
     }
 }

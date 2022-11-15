@@ -9,24 +9,14 @@ import java.io.FileOutputStream;
 import java.util.Iterator;
 
 public class Replacement {
-
     static String replace( File file, String worldReplace, String replacement) {
-
-      //  File[] openFile = Read.reading();
 
         String txt;
         String outText = "";
+        String nameFile = file.getName();
+        int amount = 0;
 
-      //  for (File file : openFile) {
-     // File file =  new File()file;
-
-            String nameFile = file.getName();
-
-
-            int amount = 0;
-
-            try (FileInputStream inputStream = new FileInputStream(file)) {
-                XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+            try (XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(file))) {
 
                 for (int s = 0; s < workbook.getNumberOfSheets(); s++) {
                     Sheet sheet = workbook.getSheetAt(s);
@@ -57,26 +47,15 @@ public class Replacement {
                         txt = "В файле \"" + nameFile + "\" совпадений не найдено.\n";
                         break;
                     case (1):
+                    case (21):
+                    case (31):
                         txt = "В файле \"" + nameFile + "\" произведена " + amount + " замена.\n";
                         break;
                     case (2):
-                        txt = "В файле \"" + nameFile + "\" произведено " + amount + " замены.\n";
-                        break;
                     case (3):
-                        txt = "В файле \"" + nameFile + "\" произведено " + amount + " замены.\n";
-                        break;
                     case (4):
-                        txt = "В файле \"" + nameFile + "\" произведено " + amount + " замены.\n";
-                        break;
-                    case (21):
-                        txt = "В файле \"" + nameFile + "\" произведена " + amount + " замена.\n";
-                        break;
                     case (22):
-                        txt = "В файле \"" + nameFile + "\" произведено " + amount + " замены.\n";
-                        break;
                     case (23):
-                        txt = "В файле \"" + nameFile + "\" произведено " + amount + " замены.\n";
-                        break;
                     case (24):
                         txt = "В файле \"" + nameFile + "\" произведено " + amount + " замены.\n";
                         break;
@@ -87,13 +66,9 @@ public class Replacement {
 
                 outText += txt;
 
-
-
             } catch (Exception e) {
                 outText = "В файле \"" + nameFile + "\" не удалось выполнить замену. Файл занят. Возможно открыт в другой программе.\n";
             }
-
-       // }
         return outText;
     }
 }

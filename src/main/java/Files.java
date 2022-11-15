@@ -7,7 +7,7 @@ public class Files {
     static File[] open() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        fileChooser.setDialogTitle("бшаепере тюик(ш) дкъ напюанрйх");
+        fileChooser.setDialogTitle("бшаепере оюойс хкх тюик(ш) дкъ напюанрйх");
         fileChooser.setMultiSelectionEnabled(true);
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Exsel.xlsx", "xlsx"));

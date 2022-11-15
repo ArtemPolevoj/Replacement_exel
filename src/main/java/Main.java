@@ -36,33 +36,24 @@ public class Main {
         fieldReplacment.setBounds(440, 5, 200, 30);
         frame.add(fieldReplacment);
 
-        JTextArea areOutText = new JTextArea("Вывод результатов работы.");
+        JTextArea areOutText = new JTextArea("Вывод результатов работы:\n");
         areOutText.setFont(new Font("Verdana", 0, 14));
         areOutText.setBounds(10, 120, 630, 180);
         areOutText.setLineWrap(true);
         areOutText.setWrapStyleWord(true);
         frame.add(areOutText);
 
-        JButton buttonReplace = new JButton("Выбрать файл(ы) и выполнить замену");
+        JButton buttonReplace = new JButton("ВЫПОЛНИТЬ ЗАМЕНУ");
         buttonReplace.setFont(new Font("Verdana", 1, 16));
         buttonReplace.setBounds(10, 50, 630, 50);
         buttonReplace.addActionListener(e -> {
-
-                    String text = "";
-                    String textAll = "";
                     ArrayList<File> openFile = Read.reading();
                     if (openFile.isEmpty()) {
                         areOutText.setText("В выбраной папке нет эксель файлов.");
                     } else {
                         for (File file : openFile) {
-                            areOutText.setText("Обрабатываем файл - " + file.getName());
-                           // JOptionPane.showMessageDialog(null,"Обрабатываем файл - " + file.getName());
-                            text = Replacement.replace(file, fieldReplace.getText(), fieldReplacment.getText());
-                            textAll += text;
-
+                            areOutText.append(Replacement.replace(file, fieldReplace.getText(), fieldReplacment.getText()));
                         }
-
-                        areOutText.setText(textAll);
                     }
                 });
 
@@ -79,16 +70,14 @@ public class Main {
         buttonMandatory.setFont(new Font("Verdana", Font.BOLD,20));
         buttonMandatory.setBorderPainted(true);
         buttonMandatory.setBounds(10,320,630,50);
-        buttonMandatory.addActionListener(e -> areOutText.setText(Mandatory.mandatory()));
+        buttonMandatory.addActionListener(e -> areOutText.append(Mandatory.mandatory()));
         frame.add(buttonMandatory);
 
         JButton buttonExit = new JButton("ВЫХОД");
         buttonExit.setFont(new Font("Verdana", 1, 20));
         buttonExit.setBorderPainted(true);
         buttonExit.setBounds(10, 420, 630, 50);
-        buttonExit.addActionListener((e) -> {
-            System.exit(0);
-        });
+        buttonExit.addActionListener(e ->  System.exit(0));
         frame.add(buttonExit);
         frame.setVisible(true);
     }
